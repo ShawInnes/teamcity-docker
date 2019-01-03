@@ -1,0 +1,38 @@
+version: '3'
+services:
+  database:
+    volumes:
+      - 'teamcity-mysql-data:/var/lib/mysql'
+    environment:
+      - 'MYSQL_ROOT_PASSWORD=mysqlsecret'
+      - 'MYSQL_DATABASE=teamcity'
+      - 'MYSQL_USER=teamcity'
+      - 'MYSQL_PASSWORD=teamcity'
+    image: mysql
+
+  server:
+    volumes:
+      - 'teamcity-data:/data/teamcity_server/datadir'
+      - 'teamcity-logs:/opt/teamcity/logs'
+    links:
+      - 'database:mysql'
+    ports:
+      - '8111:8111'
+    build:
+      context: .
+      dockerfile: Dockerfile.teamcity-server
+
+  agent:
+    volumes:
+      - 'teamcity-agent-conf:/data/teamcity_agent/conf'
+    links:
+      - 'server:teamcity-server'
+    environment:
+      - SERVER_URL=teamcity-server:8111
+    image: jetbrains/teamcity-agent
+
+volumes:
+  teamcity-data:
+  teamcity-logs:
+  teamcity-agent-conf:
+  teamcity-mysql-data:

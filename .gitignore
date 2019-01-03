@@ -2,3 +2,4 @@ agentconf/
 datadir/
 logs/
 mysqldata/
+jdbc/

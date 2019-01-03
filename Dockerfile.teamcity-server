@@ -1,0 +1,4 @@
+FROM jetbrains/teamcity-server
+
+COPY config/database.properties /data/teamcity_server/datadir/config/database.properties
+COPY jdbc/mysql-connector-java-*/mysql-connector-java-*.jar /data/teamcity_server/datadir/lib/jdbc/mysql-connector-java.jar
