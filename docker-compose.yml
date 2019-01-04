@@ -14,8 +14,10 @@ services:
     volumes:
       - 'teamcity-data:/data/teamcity_server/datadir'
       - 'teamcity-logs:/opt/teamcity/logs'
+      - '/var/run/docker.sock:/var/run/docker.sock'
     links:
       - 'database:mysql'
+      - 'bitbucket:bitbucket'
     ports:
       - '8111:8111'
     build:
@@ -25,14 +27,25 @@ services:
   agent:
     volumes:
       - 'teamcity-agent-conf:/data/teamcity_agent/conf'
+      - '/var/run/docker.sock:/var/run/docker.sock'
     links:
       - 'server:teamcity-server'
+      - 'bitbucket:bitbucket'
     environment:
       - SERVER_URL=teamcity-server:8111
     image: jetbrains/teamcity-agent
+
+  bitbucket:
+    volumes:
+      - 'bitbucket-data:/var/atlassian/application-data/bitbucket'
+    ports:
+      - '7990:7990'
+      - '7999:7999'
+    image: atlassian/bitbucket-server
 
 volumes:
   teamcity-data:
   teamcity-logs:
   teamcity-agent-conf:
   teamcity-mysql-data:
+  bitbucket-data:
